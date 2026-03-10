@@ -276,6 +276,12 @@ void CFE_TIME_InitData(void)
     ** Remaining data values used to compute time...
     */
     RefState->AtToneLatch = CFE_TIME_LatchClock();
+    RefState->AtToneMET.Seconds = RefState->AtToneLatch.Seconds;
+    RefState->AtToneMET.Subseconds = RefState->AtToneLatch.Subseconds;
+
+    // OS_printf("DEBUG_TIME: LatchSeconds=%u\n", (unsigned int)RefState->AtToneLatch.Seconds);
+    // OS_printf("DEBUG_TIME: METSeconds=%u\n", (unsigned int)RefState->AtToneMET.Seconds);
+    // OS_printf("DEBUG_TIME: STCFSeconds=%u\n", (unsigned int)CFE_TIME_TaskData.PendingSTCF.Seconds);
 
     /*
     ** Data values used to define the current clock state...
