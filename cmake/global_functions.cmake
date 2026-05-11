@@ -202,7 +202,9 @@ function(read_targetconfig)
   endwhile()
 
   # Remove duplicate entries in the generated lists
-  list(REMOVE_DUPLICATES TGTSYS_LIST)
+  if (TGTSYS_LIST)
+    list(REMOVE_DUPLICATES TGTSYS_LIST)
+  endif(TGTSYS_LIST)
   if (MISSION_APPS)
     list(REMOVE_DUPLICATES MISSION_APPS)
   endif (MISSION_APPS)
