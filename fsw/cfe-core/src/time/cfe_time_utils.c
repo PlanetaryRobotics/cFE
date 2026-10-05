@@ -37,6 +37,7 @@
 #include "private/cfe_es_resetdata_typedef.h"
 
 #include <string.h>
+#include <time.h>
 
 
 
@@ -276,6 +277,20 @@ void CFE_TIME_InitData(void)
     ** Remaining data values used to compute time...
     */
     RefState->AtToneLatch = CFE_TIME_LatchClock();
+
+    // Set cFS reference with the current TAI time
+    FILE* f = fopen("/usr/share/zoneinfo/leap-seconds.list", "r");
+    unsigned long NTP_Time = 0;
+    int DTAI = 0;
+    char line[128];
+    while (fgets(line, sizeof line, f)){
+        if (sscanf(line, "%lu%d", &NTP_Time, &DTAI) != 2) {
+        }}
+    (void)fclose(f);
+    struct timespec t_UTC;
+    clock_gettime(CLOCK_REALTIME, &t_UTC);
+    RefState->AtToneMET.Seconds = t_UTC.tv_sec+ DTAI;
+    RefState->AtToneMET.Subseconds = CFE_TIME_Micro2SubSecs(t_UTC.tv_nsec/1e3);
 
     /*
     ** Data values used to define the current clock state...
