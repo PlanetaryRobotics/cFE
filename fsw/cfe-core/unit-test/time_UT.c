@@ -514,15 +514,15 @@ void Test_GetTime(void)
     uint16 StateFlags, ActFlags;
     char testDesc[UT_MAX_MESSAGE_LENGTH];
     char timeBuf[sizeof("yyyy-ddd-hh:mm:ss.xxxxx_")];
-    /* Note: Time is in seconds + microseconds since 1980-001-00:00:00:00000 */
+    /* Note: Time is in seconds + microseconds since 1970-001-00:00:00:00000 */
     /* The time below equals 2013-001-02:03:04.56789 */
-    int seconds = 1041472984;
+    int seconds = 1357005784;
     int microsecs = 567890;
     int actual;
     const char *expectedMET = "2013-001-02:03:14.56789";
     const char *expectedTAI = "2013-001-03:03:14.56789";
     const char *expectedUTC = "2013-001-03:02:42.56789";
-    const char *expectedSTCF = "1980-001-01:00:00.00000";
+    const char *expectedSTCF = "1970-001-01:00:00.00000";
     volatile CFE_TIME_ReferenceState_t *RefState;
 
 #ifdef UT_VERBOSE
@@ -1032,10 +1032,10 @@ void Test_ConvertTime(void)
 
 #if (CFE_MISSION_TIME_CFG_DEFAULT_TAI == true)
     /* TAI time derived = MET + STCF */
-    const char *expectedSCTime = "1980-001-02:00:40.00000";
+    const char *expectedSCTime = "1970-001-02:00:40.00000";
 #else
     /* UTC time derived = MET + STCF - Leaps */
-    const char *expectedSCTime = "1980-001-02:00:08.00000";
+    const char *expectedSCTime = "1970-001-02:00:08.00000";
 #endif
 
 #ifdef UT_VERBOSE
@@ -1149,7 +1149,7 @@ void Test_ConvertTime(void)
 ** Test function for creating a text string representing the date and time
 **
 ** NOTE: Test results depend on the epoch values in cfe_mission_cfg.h (the
-**       tests below assume an epoch of 1980-001-00:00:00.00000).  Full
+**       tests below assume an epoch of 1970-001-00:00:00.00000).  Full
 **       coverage is possible only when CFE_MISSION_TIME_EPOCH_SECOND > 0
 */
 void Test_Print(void)
@@ -1167,7 +1167,7 @@ void Test_Print(void)
     time.Subseconds = 0;
     time.Seconds = 0;
     CFE_TIME_Print(testDesc, time);
-    result = !strcmp(testDesc, "1980-001-00:00:00.00000");
+    result = !strcmp(testDesc, "1970-001-00:00:00.00000");
     strncat(testDesc," Zero time value",
             UT_MAX_MESSAGE_LENGTH - strlen(testDesc));
     UT_Report(__FILE__, __LINE__,
@@ -1182,7 +1182,7 @@ void Test_Print(void)
     time.Subseconds = 0;
     time.Seconds = 59;
     CFE_TIME_Print(testDesc, time);
-    result = !strcmp(testDesc, "1980-001-00:00:59.00000");
+    result = !strcmp(testDesc, "1970-001-00:00:59.00000");
     strncat(testDesc,
             " Seconds overflow if CFE_MISSION_TIME_EPOCH_SECOND > 0",
             UT_MAX_MESSAGE_LENGTH - strlen(testDesc));
@@ -1194,7 +1194,7 @@ void Test_Print(void)
     /* Test with mission representative time values */
     UT_InitData();
     time.Subseconds = 215000;
-    time.Seconds = 1041472984;
+    time.Seconds = 1357005784;
     CFE_TIME_Print(testDesc, time);
     result = !strcmp(testDesc, "2013-001-02:03:04.00005");
     strncat(testDesc," Mission representative time",
@@ -1209,7 +1209,7 @@ void Test_Print(void)
     time.Subseconds = 0xffffffff;
     time.Seconds = 0xffffffff;
     CFE_TIME_Print(testDesc, time);
-    result = !strcmp(testDesc, "2116-038-06:28:15.99999");
+    result = !strcmp(testDesc, "2106-038-06:28:15.99999");
     strncat(testDesc," Maximum seconds/subseconds values",
             UT_MAX_MESSAGE_LENGTH - strlen(testDesc));
     UT_Report(__FILE__, __LINE__,
