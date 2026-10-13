@@ -278,7 +278,12 @@ void CFE_TIME_InitData(void)
     */
     RefState->AtToneLatch = CFE_TIME_LatchClock();
 
-    // Set cFS reference with the current TAI time
+    // Sync spacecraft clock (STCF) with the system clock so CFE_TIME_GetUTC()
+    // and CFE_TIME_GetTAI() return meaningful wall-clock values out of the box.
+    // Do NOT overwrite AtToneMET — it was already initialized by
+    // CFE_TIME_QueryResetVars() to either the warm-restart value or
+    // CFE_MISSION_TIME_DEF_MET_SECS. MET is Mission Elapsed Time and must
+    // start small (seconds since mission start), not the current Unix epoch.
     FILE* f = fopen("/usr/share/zoneinfo/leap-seconds.list", "r");
     unsigned long NTP_Time = 0;
     int DTAI = 0;
@@ -289,8 +294,8 @@ void CFE_TIME_InitData(void)
     (void)fclose(f);
     struct timespec t_UTC;
     clock_gettime(CLOCK_REALTIME, &t_UTC);
-    RefState->AtToneMET.Seconds = t_UTC.tv_sec+ DTAI;
-    RefState->AtToneMET.Subseconds = CFE_TIME_Micro2SubSecs(t_UTC.tv_nsec/1e3);
+    RefState->AtToneSTCF.Seconds = t_UTC.tv_sec + DTAI;
+    RefState->AtToneSTCF.Subseconds = CFE_TIME_Micro2SubSecs(t_UTC.tv_nsec/1e3);
 
     /*
     ** Data values used to define the current clock state...
